@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.web.client.RestTemplate;
 
+import com.brown_ccv.repos_analysis.model.RepositoryInfo;
 import com.jayway.jsonpath.JsonPath;
 
 @SpringBootTest
@@ -39,7 +40,7 @@ public class RepositoryServiceTests {
             .thenReturn(mockJsonResponse);
 
         //Test our implementation
-        String repoData = repositoryService.fetchRepositories();
+        String repoData = repositoryService.fetchAllRepoObjectsToString();
         assertNotNull(repoData);
 
         //Mapping all json values with their respective keys
@@ -52,5 +53,28 @@ public class RepositoryServiceTests {
             
             assertFalse(repo.toString().contains("\"status\": \"404\""));
         }
+    }
+
+    @Test
+    public void testFetchReposToModel() throws IOException{
+        //Loading mock json file
+        String mockJsonResponse = Files.readString(Paths.get("src/test/java/com/brown_ccv/repos_analysis/resources/mock-repos.json"));
+
+        //Not working need to fix
+        when(restTemplate.getForObject("https://api.github.com/orgs/brown-ccv/repos", String.class))
+            .thenReturn(mockJsonResponse);
+
+        //Test our implementation where we map the JSON response into model objects
+        List<RepositoryInfo> repositories = repositoryService.fetchReposToModel();
+        assertNotNull(repositories);
+
+        for (RepositoryInfo repo : repositories) {
+            // System.out.println(repo);
+            assertNotNull(repo.getId());
+            assertNotNull(repo.getName());
+
+            assertFalse(repo.getName().isEmpty());
+        }
+
     }
 }
