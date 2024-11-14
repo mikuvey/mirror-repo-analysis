@@ -2,6 +2,7 @@ package com.brown_ccv.repos_analysis.service;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 // import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -19,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.brown_ccv.repos_analysis.model.RepositoryInfo;
 import com.jayway.jsonpath.JsonPath;
+import static  org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 public class RepositoryServiceTests {
@@ -40,7 +42,7 @@ public class RepositoryServiceTests {
             .thenReturn(mockJsonResponse);
 
         //Test our implementation
-        String repoData = repositoryService.fetchAllRepoObjectsToString();
+        String repoData = repositoryService.fetchRepoObjectsToString();
         assertNotNull(repoData);
 
         //Mapping all json values with their respective keys
@@ -77,4 +79,19 @@ public class RepositoryServiceTests {
         }
 
     }
+
+    @Test
+    public void testFetchAllReposToList() throws IOException{
+        //Loading mock json file
+        String mockJsonResponse = Files.readString(Paths.get("src/test/java/com/brown_ccv/repos_analysis/resources/mock-repos.json"));
+
+        //Not working need to fix
+        when(restTemplate.getForObject("https://api.github.com/orgs/brown-ccv/repos", String.class))
+            .thenReturn(mockJsonResponse);
+
+        //Test our implementation where we map the JSON response into model objects
+        List<RepositoryInfo> repositories = repositoryService.fetchAllReposToList();
+        assertThat(repositories.size()).isEqualTo(197);
+    }
+
 }
