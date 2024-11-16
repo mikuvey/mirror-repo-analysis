@@ -30,7 +30,7 @@ public class RepositoryService {
         List<RepositoryInfo> repos  = fetchAllReposToList();
         int count = 0;
         for(RepositoryInfo repo: repos){
-            System.out.println(repo);
+            System.out.println(repo.getName());
             count++;
         }
         System.out.println(count);
