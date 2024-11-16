@@ -24,17 +24,17 @@ public class RepositoryService {
 
     private static final int PER_PAGE = 100;
 
-    @Profile("!test")
-    @PostConstruct
-    public void init() {
-        List<RepositoryInfo> repos  = fetchAllReposToList();
-        int count = 0;
-        for(RepositoryInfo repo: repos){
-            System.out.println(repo.getName());
-            count++;
-        }
-        System.out.println(count);
-    }
+    // @Profile("!test")
+    // @PostConstruct
+    // public void init() {
+    //     List<RepositoryInfo> repos  = fetchAllReposToList();
+    //     int count = 0;
+    //     for(RepositoryInfo repo: repos){
+    //         System.out.println(repo.getName());
+    //         count++;
+    //     }
+    //     System.out.println(count);
+    // }
 
     public String fetchRepoObjectsToString(){
         RestTemplate restTemplate = new RestTemplate();
