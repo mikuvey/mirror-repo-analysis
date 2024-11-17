@@ -6,7 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+// import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -18,20 +18,18 @@ import com.brown_ccv.repos_analysis.model.RepositoryInfo;
 import com.brown_ccv.repos_analysis.repository.MongoRepo;
 
 @Service
-public class RepoService {
+public class FetchService {
 
     private static final Logger log = LoggerFactory.getLogger(RepoController.class);
     
     @Autowired
-    private MongoRepo mongoRepository; // Your MongoDB repository for RepositoryInfo
+    private MongoRepo mongoRepository; 
 
     private static final int PER_PAGE = 100;
 
-    @Value("${repos.url}")
-    private String reposUrl;
 
-    public void fetchAndSaveAllRepositories() {
-        String url = reposUrl + "?per_page=" + PER_PAGE;
+    public void fetchAndSaveData(String gitHubApiUrl) {
+        String url = gitHubApiUrl + "?per_page=" + PER_PAGE;
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<RepositoryInfo[]> responseEntity;
 
@@ -44,16 +42,16 @@ public class RepoService {
             // Save each repository from the current page into MongoDB
             List<RepositoryInfo> currentRepositories = Arrays.asList(responseEntity.getBody());
             // System.out.println(currentRepositories);
-            log.info(currentRepositories.size() + "repositories fetched from github");
+            log.info(currentRepositories.size() + " records Fetched");
 
             currentRepositories.forEach(mongoRepository::save); // Save each repository to MongoDB
-            log.info(currentRepositories.size() + "repositories saved into mongoDB");
+            log.info(currentRepositories.size() + " records saved into mongoDB");
 
             // Check for the next page URL
             url = getNextPageUrl(responseEntity.getHeaders());
-            
+            log.info("Checking for more data.....");
 
-        } while (url != null);  // Continue if there is a next page
+        } while (url != null);
     }
 
     private String getNextPageUrl(HttpHeaders headers) {

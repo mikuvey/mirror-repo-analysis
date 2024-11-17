@@ -1,5 +1,17 @@
-{"properties": [{
-  "name": "repos.url",
-  "type": "java.lang.String",
-  "description": "A description for 'repos.url'"
-}]}
+{"properties": [
+  {
+    "name": "repos.owner",
+    "type": "java.lang.String",
+    "description": "A description for 'repos.owner'"
+  },
+  {
+    "name": "gitApi.url",
+    "type": "java.lang.String",
+    "description": "A description for 'gitApi.url'"
+  },
+  {
+    "name": "repos.url",
+    "type": "java.lang.String",
+    "description": "A description for 'repos.url'"
+  }
+]}
