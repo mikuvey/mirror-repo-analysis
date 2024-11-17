@@ -1,6 +1,6 @@
 package com.brown_ccv.repos_analysis.controller;
 
-import com.brown_ccv.repos_analysis.service.FetchService;
+import com.brown_ccv.repos_analysis.service.PaginationFetchService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +18,7 @@ public class RepoController {
     private static final Logger log = LoggerFactory.getLogger(RepoController.class);
 
     @Autowired
-    private FetchService fetchService;
+    private PaginationFetchService fetchService;
 
     @Value("${repos.owner}")
     private String owner;

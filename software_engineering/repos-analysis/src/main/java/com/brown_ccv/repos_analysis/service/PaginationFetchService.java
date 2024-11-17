@@ -18,7 +18,7 @@ import com.brown_ccv.repos_analysis.model.RepositoryInfo;
 import com.brown_ccv.repos_analysis.repository.MongoRepo;
 
 @Service
-public class FetchService {
+public class PaginationFetchService {
 
     private static final Logger log = LoggerFactory.getLogger(RepoController.class);
     
