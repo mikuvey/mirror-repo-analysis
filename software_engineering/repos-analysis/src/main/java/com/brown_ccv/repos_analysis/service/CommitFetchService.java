@@ -18,19 +18,14 @@ public class CommitFetchService implements RepoAttributeDataFetchService {
 
     private static final Logger log = LoggerFactory.getLogger(CommitFetchService.class);
 
-    // private String gitHubApiUrl;
-
     @Autowired
     RepositoryInfoDao repositoryInfoDao;
 
-    // public CommitFetchService() {
-    //     gitHubApiUrl = "https://api.github.com/repos/";
-    // }
 
     @SuppressWarnings("null")
     @Override
-    public void fetchData(String gitHubApiUrl, String owner, String repo) {
-        String url = gitHubApiUrl + owner + "/" + repo + "/commits?per_page=1";
+    public void fetchData(String url, String owner, String repo) {
+        
         log.info("Fetching data from: " + url);
 
         RestTemplate restTemplate = new RestTemplate();

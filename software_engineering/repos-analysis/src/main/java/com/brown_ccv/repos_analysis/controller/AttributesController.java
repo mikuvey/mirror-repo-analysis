@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.brown_ccv.repos_analysis.service.CommitFetchService;
+import com.brown_ccv.repos_analysis.utils.UrlBuilder;
 
 @RestController
 @RequestMapping("/api/")
@@ -27,14 +28,21 @@ public class AttributesController {
 
     private String gitHubApiUrl;
 
-    // @Value("${repos.url}")
-    // private String gitHubApiUrl;
 
     @GetMapping("/{repo}/fetch-last-commit")
     public ResponseEntity<String> updateLastCommit(@PathVariable String repo) {
         gitHubApiUrl = "https://api.github.com/repos/";
+        String attribue = "commits";
+        String query = "?per_page=1";
+        String url = new UrlBuilder(gitHubApiUrl, owner)
+                            .withRepo(repo)
+                            .withAttribute(attribue)
+                            .withQuery(query)
+                            .build();
+        
+        log.info("Created url: "+url);
         try {
-            commitFetchService.fetchData(gitHubApiUrl, owner, repo);
+            commitFetchService.fetchData(url, owner, repo);
             log.info("Latest commit date and time saved on to MongoDB");
             return ResponseEntity.ok("Latest commit date and time saved on to MongoDB");
         } catch (Exception e) {
