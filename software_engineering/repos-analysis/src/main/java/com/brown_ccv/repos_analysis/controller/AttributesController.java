@@ -25,13 +25,16 @@ public class AttributesController {
     @Value("${repos.owner}")
     private String owner;
 
+    private String gitHubApiUrl;
+
     // @Value("${repos.url}")
     // private String gitHubApiUrl;
 
     @GetMapping("/{repo}/fetch-last-commit")
     public ResponseEntity<String> updateLastCommit(@PathVariable String repo) {
+        gitHubApiUrl = "https://api.github.com/repos/";
         try {
-            commitFetchService.fetchData(owner, repo);
+            commitFetchService.fetchData(gitHubApiUrl, owner, repo);
             log.info("Latest commit date and time saved on to MongoDB");
             return ResponseEntity.ok("Latest commit date and time saved on to MongoDB");
         } catch (Exception e) {

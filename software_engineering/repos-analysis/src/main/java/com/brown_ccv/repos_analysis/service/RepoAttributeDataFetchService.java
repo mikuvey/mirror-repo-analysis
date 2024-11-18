@@ -8,6 +8,6 @@ public interface RepoAttributeDataFetchService {
      * @param repo The name of the repository.
      * @return Fetched data as a String.
      */
-    void fetchData(String owner, String repo);
+    void fetchData(String gitHubApiUrl, String owner, String repo);
     
 }
