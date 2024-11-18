@@ -14,9 +14,9 @@ import com.brown_ccv.repos_analysis.model.RepositoryInfo;
 import com.brown_ccv.repos_analysis.repository.RepositoryInfoDao;
 
 @Service
-public class CommitFetchService implements RepoAttributeDataFetchService {
+public class LastDateFetchService implements RepoAttributeDataFetchService {
 
-    private static final Logger log = LoggerFactory.getLogger(CommitFetchService.class);
+    private static final Logger log = LoggerFactory.getLogger(LastDateFetchService.class);
 
     @Autowired
     RepositoryInfoDao repositoryInfoDao;
@@ -33,21 +33,21 @@ public class CommitFetchService implements RepoAttributeDataFetchService {
         try {
             // Fetch the JSON array of commits and access the first element's date
             // String str = restTemplate.getForObject(url, String.class);
-            JsonMapDate[] commitsArray = restTemplate.getForObject(url, JsonMapDate[].class);
+            JsonMapDate[] dataArray = restTemplate.getForObject(url, JsonMapDate[].class);
 
-            log.info("Length of Array "+ commitsArray.length);
+            log.info("Length of Array "+ dataArray.length);
             // log.info(str);
 
-            if (commitsArray.length > 0) {
-                String dateString = commitsArray[0].getCommit().getAuthor().getDate();
+            if (dataArray.length > 0) {
+                String dateString = dataArray[0].getCommit().getAuthor().getDate();
 
                 if (dateString != null) {
-                    log.info("Last commit date for '{}': {}", repo, dateString);
+                    log.info("Last date for '{}': {}", repo, dateString);
 
                     Instant instant = Instant.parse(dateString);
                     Date date = Date.from(instant);
 
-                    log.info("Parsed last commit date: {}", date);
+                    log.info("Parsed last  date: {}", date);
 
                     RepositoryInfo repository = repositoryInfoDao.findByName(repo);
 
@@ -59,14 +59,14 @@ public class CommitFetchService implements RepoAttributeDataFetchService {
                         log.error("Repository '{}' not found in the database for owner '{}'", repo, owner);
                     }
                 } else {
-                    log.error("No date found in the first commit response for repository '{}'", repo);
+                    log.error("No date found in the first  response for repository '{}'", repo);
                 }
             } else {
                 log.warn("No commits found for repository '{}'", repo);
             }
             
         } catch (Exception e) {
-            log.error("Error fetching commit data for repository: " + repo, e);
+            log.error("Error fetching  data for repository: " + repo, e);
         }
     }
 }
