@@ -66,7 +66,7 @@ public class LastDateFetchService implements RepoAttributeDataFetchService {
             }
             
         } catch (Exception e) {
-            log.error("Error fetching  data for repository: " + repo, e);
+            log.error("Error fetching commit data for repository: " + repo, e);
         }
     }
 }
