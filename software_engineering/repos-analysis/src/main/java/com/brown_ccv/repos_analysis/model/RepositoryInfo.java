@@ -1,6 +1,7 @@
 package com.brown_ccv.repos_analysis.model;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -18,6 +19,7 @@ public class RepositoryInfo {
     private int forks_count;
     private Date lastCommit;
     private Date lastPullRequest;
+    private List<String> topics;
     
     //Lombok will take care of getters and setters
 }
