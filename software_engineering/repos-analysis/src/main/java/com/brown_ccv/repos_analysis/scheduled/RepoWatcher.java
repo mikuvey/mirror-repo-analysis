@@ -30,15 +30,20 @@ public class RepoWatcher {
 
     @Scheduled(fixedDelay = 600000)
     public void getAllRepoData(){
-        repoController.fetchAndStoreRepositories();
-        log.info("All repositories fetched");
-        repositories = repoFetchService.getRepositoryNames();
-
-        for(String repo: repositories){
-            attributesController.updateLastCommit(repo);
+        try{
+            repoController.fetchAndStoreRepositories();
+            log.info("All repositories fetched");
+            repositories = repoFetchService.getRepositoryNames();
+            
+            int count = 0;
+            for(String repo: repositories){
+                attributesController.updateLastCommit(repo);
+                count++;
+                log.info("{} repository last activity updated", count);
+            }
+        } catch(Exception e){
+            log.info("Scheduler stopped due to an unexpected error");
         }
-        
-
     }
 
 }
