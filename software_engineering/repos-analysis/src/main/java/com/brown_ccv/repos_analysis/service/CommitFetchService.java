@@ -32,11 +32,11 @@ public class CommitFetchService implements RepoAttributeDataFetchService {
 
         try {
             // Fetch the JSON array of commits and access the first element's date
-            String str = restTemplate.getForObject(url, String.class);
+            // String str = restTemplate.getForObject(url, String.class);
             JsonMapDate[] commitsArray = restTemplate.getForObject(url, JsonMapDate[].class);
 
             log.info("Length of Array "+ commitsArray.length);
-            log.info(str);
+            // log.info(str);
 
             if (commitsArray.length > 0) {
                 String dateString = commitsArray[0].getCommit().getAuthor().getDate();

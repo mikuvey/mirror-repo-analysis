@@ -31,9 +31,9 @@ public class AttributesController {
 
     @GetMapping("/{repo}/fetch-last-commit")
     public ResponseEntity<String> updateLastCommit(@PathVariable String repo) {
-        gitHubApiUrl = "https://api.github.com/repos/";
+        gitHubApiUrl = "https://api.github.com/repos";
         String attribue = "commits";
-        String query = "?per_page=1";
+        String query = "per_page=1";
         String url = new UrlBuilder(gitHubApiUrl, owner)
                             .withRepo(repo)
                             .withAttribute(attribue)
