@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.brown_ccv.repos_analysis.service.CommitFetchService;
+import com.brown_ccv.repos_analysis.service.LastDateFetchService;
 import com.brown_ccv.repos_analysis.utils.UrlBuilder;
 
 @RestController
@@ -21,7 +21,7 @@ public class AttributesController {
     private static final Logger log = LoggerFactory.getLogger(AttributesController.class);
     
     @Autowired
-    private CommitFetchService commitFetchService;
+    private LastDateFetchService commitFetchService;
 
     @Value("${repos.owner}")
     private String owner;

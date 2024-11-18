@@ -1,5 +1,6 @@
 package com.brown_ccv.repos_analysis.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,6 +28,13 @@ public class PaginationFetchService {
 
     private static final int PER_PAGE = 100;
 
+    // In-memory list to hold repository names
+    private final List<String> repositoryNames = new ArrayList<>();
+
+    public List<String> getRepositoryNames() {
+        return repositoryNames; // Expose this list through a getter
+    }
+
 
     public void fetchAndSaveData(String gitHubApiUrl) {
         String url = gitHubApiUrl + "?per_page=" + PER_PAGE;
@@ -41,6 +49,10 @@ public class PaginationFetchService {
             
             // Save each repository from the current page into MongoDB
             List<RepositoryInfo> currentRepositories = Arrays.asList(responseEntity.getBody());
+
+            // Add repository names to the in-memory list
+            currentRepositories.forEach(repo -> repositoryNames.add(repo.getName()));
+            
             // System.out.println(currentRepositories);
             log.info(currentRepositories.size() + " records Fetched");
 
