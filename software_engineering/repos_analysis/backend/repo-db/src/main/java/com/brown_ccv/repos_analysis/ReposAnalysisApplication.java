@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Profile;
 import com.brown_ccv.repos_analysis.service.RepositoryService;
 
 @SpringBootApplication
+// @EnableScheduling
 public class ReposAnalysisApplication {
 
 	// private static final Logger log = LoggerFactory.getLogger(ReposAnalysisApplication.class);
