@@ -1,4 +1,4 @@
-package main.java.com.brown_ccv.repos_analysis.exception;
+package com.brown_ccv.repos_analysis.exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

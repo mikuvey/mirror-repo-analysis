@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.brown-ccv</groupId>
-	<artifactId>repos-analysis</artifactId>
+	<artifactId>repos-db</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
-	<name>repos-analysis</name>
+	<name>repos-db</name>
 	<description>Repository analysis for archiving repositories</description>
 	<url/>
 	<licenses>
