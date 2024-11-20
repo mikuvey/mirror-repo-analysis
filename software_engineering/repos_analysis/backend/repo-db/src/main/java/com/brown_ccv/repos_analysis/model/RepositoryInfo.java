@@ -17,10 +17,9 @@ public class RepositoryInfo {
     private boolean archived;
     private int stargazers_count;
     private int forks_count;
-    private Date lastCommit;
-    private Date lastPullRequest;
+    private int open_issues_count;
     private List<String> topics;
     private Date pushed_at;
     
-    //Lombok will take care of getters and setters
+    //Lombok will take care of getters and setters and toString
 }

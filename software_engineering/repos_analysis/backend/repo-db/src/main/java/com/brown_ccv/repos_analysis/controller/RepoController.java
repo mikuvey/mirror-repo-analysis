@@ -37,7 +37,6 @@ public class RepoController {
             log.info("Repositories successfully fetched and stored in MongoDB.");
             return ResponseEntity.ok("Repositories successfully fetched and stored in MongoDB.");
         } catch (Exception e) {
-            // Log the error for debugging
             log.info("An error occurred while fetching and storing repositories.");
             e.printStackTrace();
             return ResponseEntity.status(500).body("An error occurred while fetching and storing repositories.");
