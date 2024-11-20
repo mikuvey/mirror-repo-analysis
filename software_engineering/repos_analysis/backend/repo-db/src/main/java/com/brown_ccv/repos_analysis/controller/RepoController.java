@@ -1,6 +1,7 @@
 package com.brown_ccv.repos_analysis.controller;
 
 import com.brown_ccv.repos_analysis.service.PaginationFetchService;
+import com.brown_ccv.repos_analysis.utils.UrlBuilder; 
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,12 +25,13 @@ public class RepoController {
     private String owner;
 
     @Value("${repos.url}")
-    private String gitUrl;
+    private String gitHubApiUrl;
 
     @GetMapping("/fetch-repos")
     public ResponseEntity<String> fetchAndStoreRepositories() {
-        String reposUrl = gitUrl+owner+"/repos";
-        // String reposUrl = "https://api.github.com/orgs/brown-ccv/repos";
+        String reposUrl = new UrlBuilder(gitHubApiUrl, owner).withAttribute("repos").build();
+        log.info("Created url: "+ reposUrl);
+        
         try {
             fetchService.fetchAndSaveData(reposUrl);
             log.info("Repositories successfully fetched and stored in MongoDB.");
