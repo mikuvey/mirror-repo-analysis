@@ -20,6 +20,7 @@ public class RepositoryInfo {
     private Date lastCommit;
     private Date lastPullRequest;
     private List<String> topics;
+    private Date pushed_at;
     
     //Lombok will take care of getters and setters
 }
