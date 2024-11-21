@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Profile;
 
 @SpringBootApplication
 // @EnableScheduling
+
 public class ReposAnalysisApplication {
 
 	// private static final Logger log = LoggerFactory.getLogger(ReposAnalysisApplication.class);
@@ -19,3 +20,4 @@ public class ReposAnalysisApplication {
 		SpringApplication.run(ReposAnalysisApplication.class, args);
 	}
 }
+

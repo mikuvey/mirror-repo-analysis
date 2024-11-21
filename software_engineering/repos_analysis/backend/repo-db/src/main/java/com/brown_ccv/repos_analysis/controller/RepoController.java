@@ -1,16 +1,25 @@
 package com.brown_ccv.repos_analysis.controller;
 
+import com.brown_ccv.repos_analysis.model.RepositoryInfo;
+import com.brown_ccv.repos_analysis.repository.MongoRepo;
 import com.brown_ccv.repos_analysis.service.PaginationFetchService;
-import com.brown_ccv.repos_analysis.utils.UrlBuilder; 
+import com.brown_ccv.repos_analysis.service.RepositoryService;
+import com.brown_ccv.repos_analysis.utils.UrlBuilder;
+
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/")
@@ -21,13 +30,19 @@ public class RepoController {
     @Autowired
     private PaginationFetchService fetchService;
 
+    @Autowired
+    private RepositoryService repositoryService;
+
+    @Autowired
+    private MongoRepo repos;
+
     @Value("${repos.owner}")
     private String owner;
 
     @Value("${repos.url}")
     private String gitHubApiUrl;
 
-    @GetMapping("/fetch-repos")
+    @GetMapping("/load-github-repos")
     public ResponseEntity<String> fetchAndStoreRepositories() {
         String reposUrl = new UrlBuilder(gitHubApiUrl, owner).withAttribute("repos").build();
         log.info("Created url: "+ reposUrl);
@@ -42,4 +57,38 @@ public class RepoController {
             return ResponseEntity.status(500).body("An error occurred while fetching and storing repositories.");
         }
     }
+
+    @GetMapping("/fetch-all-repos")
+    public List<RepositoryInfo> getAllRepos(){
+        return repos.findAll();
+    }
+
+    @GetMapping("/fetch-repos")
+    public Page<RepositoryInfo> getPaginatedRepos(
+            @RequestParam(defaultValue = "0") int page, //Page number (default 0)
+            @RequestParam(defaultValue = "10") int size //Page size (default 10)
+    ) {
+        /* Sample request: GET /fetch-repos?page=1&size=5 */
+        PageRequest pageable = PageRequest.of(page, size);
+        return repos.findAll(pageable);
+    }
+
+    @GetMapping("/fetch-repos/filter")
+    public ResponseEntity<List<RepositoryInfo>> filterAndSearchRepositories(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) Boolean archived,
+            @RequestParam(required = false) String sortby) {
+        /* Samples:
+         GET /fetch-repos/filter?search=genetics&archived=false&sortby=forks_low_to_high
+         GET /fetch-repos/filter
+         GET /fetch-repos/filter?search=genetics
+         
+         */
+
+        log.info("{}, {}, {} are the parameters that are pssed", search, archived, sortby);
+
+        List<RepositoryInfo> results = repositoryService.filterAndSearchRepositories(search, archived, sortby);
+        return ResponseEntity.ok(results);
+            }
+    
 }
