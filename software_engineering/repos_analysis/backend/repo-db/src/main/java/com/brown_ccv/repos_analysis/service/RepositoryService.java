@@ -19,16 +19,16 @@ public class RepositoryService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    public List<RepositoryInfo> filterAndSearchRepositories(String search, Boolean archived, String sortBy, int page, int pageSize) {
+    public List<RepositoryInfo> filterAndSearchRepositories(String search, Boolean archived, String sortBy, String order, int page, int pageSize) {
         List<AggregationOperation> pipeline = new ArrayList<>();
-
-        // If no search is provided, include all repositories
+    
+        // If search is provided, use $search
         if (search != null && !search.isEmpty()) {
             pipeline.add(context -> new Document("$search", 
                 new Document("index", "search-repo-names")
                 .append("text", 
-                new Document("query", search)
-                .append("path", "name")
+                    new Document("query", search)
+                    .append("path", "name")
                 )
             ));
         }
@@ -38,46 +38,41 @@ public class RepositoryService {
             pipeline.add(Aggregation.match(Criteria.where("archived").is(archived)));
         }
     
-        // Always include a sort stage (default or user-provided)
-        pipeline.add(Aggregation.sort(getSortOrder(sortBy)));
-
+        // Sort the results
+        pipeline.add(Aggregation.sort(getSortOrder(sortBy, order)));
+    
         // Add pagination stages
         pipeline.add(Aggregation.skip((long) page * pageSize)); // Skip documents based on page
         pipeline.add(Aggregation.limit(pageSize)); // Limit the number of results per page
-
     
         // Execute the aggregation pipeline
         Aggregation aggregation = Aggregation.newAggregation(pipeline);
         return mongoTemplate.aggregate(aggregation, "repositories", RepositoryInfo.class).getMappedResults();
     }
-        
-    private Sort getSortOrder(String sortBy) {
+    
+    private Sort getSortOrder(String sortBy, String order) {
+        // Default sorting field
         if (sortBy == null || sortBy.isEmpty()) {
-            // Default sorting: stars descending
-            return Sort.by(Sort.Order.desc("stargazers_count"));
+            sortBy = "stars"; // Default to stars
         }
     
-        // Map sorting options to fields
+        // Determine sorting direction
+        Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
+    
+        // Map sortBy to corresponding database field
         switch (sortBy) {
-            case "stars_low_to_high":
-                return Sort.by(Sort.Order.asc("stargazers_count"));
-            case "stars_high_to_low":
-                return Sort.by(Sort.Order.desc("stargazers_count"));
-            case "forks_low_to_high":
-                return Sort.by(Sort.Order.asc("forks_count"));
-            case "forks_high_to_low":
-                return Sort.by(Sort.Order.desc("forks_count"));
-            case "issues_low_to_high":
-                return Sort.by(Sort.Order.asc("open_issues_count"));
-            case "issues_high_to_low":
-                return Sort.by(Sort.Order.desc("open_issues_count"));
-            case "date_asc":
-                return Sort.by(Sort.Order.asc("pushed_at"));
-            case "date_desc":
-                return Sort.by(Sort.Order.desc("pushed_at"));
+            case "stars":
+                return Sort.by(direction, "stargazers_count");
+            case "forks":
+                return Sort.by(direction, "forks_count");
+            case "issues":
+                return Sort.by(direction, "open_issues_count");
+            case "date":
+                return Sort.by(direction, "pushed_at");
             default:
                 throw new IllegalArgumentException("Invalid sortBy value: " + sortBy);
         }
     }
+    
     
 }

@@ -81,22 +81,25 @@ public class RepoController {
     @GetMapping("/fetch-repos/filter")
     @CrossOrigin
     public ResponseEntity<List<RepositoryInfo>> filterAndSearchRepositories(
-            @RequestParam(required = false) String search,
-            @RequestParam(required = false) Boolean archived,
-            @RequestParam(required = false) String sortby,
-            @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "6") int pagesize) {
+        @RequestParam(required = false) String search,
+        @RequestParam(required = false) Boolean archived,
+        @RequestParam(required = false, defaultValue = "stars") String sortBy,
+        @RequestParam(required = false, defaultValue = "desc") String order,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int pageSize) {
+        
         /* Samples:
-         GET /fetch-repos/filter?search=genetics&archived=false&sortby=forks_low_to_high
-         GET /fetch-repos/filter
-         GET /fetch-repos/filter?search=genetics
-         http://localhost:8080/fetch-repos/filter?sortby=date_asc
-         */
+    //      GET /fetch-repos/filter?search=genetics
+    //      GET /fetch-repos/filter
+    //      GET /fetch-repos/filter?search=genetics
+    //      http://localhost:8080/fetch-repos/filter?sortby=date_asc
+            GET /filter?sortBy=issues&order=desc
 
-        log.info("{}, {}, {} are the parameters that are pssed", search, archived, sortby);
+    //      */
 
-        List<RepositoryInfo> results = repositoryService.filterAndSearchRepositories(search, archived, sortby, page, pagesize);
-        return ResponseEntity.ok(results);
-            }
+    List<RepositoryInfo> results = repositoryService.filterAndSearchRepositories(search, archived, sortBy, order, page, pageSize);
+    return ResponseEntity.ok(results);
+}
+
     
 }
