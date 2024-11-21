@@ -19,7 +19,7 @@ public class RepositoryService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    public List<RepositoryInfo> filterAndSearchRepositories(String search, Boolean archived, String sortBy) {
+    public List<RepositoryInfo> filterAndSearchRepositories(String search, Boolean archived, String sortBy, int page, int pageSize) {
         List<AggregationOperation> pipeline = new ArrayList<>();
 
         // If no search is provided, include all repositories
@@ -42,8 +42,8 @@ public class RepositoryService {
         pipeline.add(Aggregation.sort(getSortOrder(sortBy)));
 
         // Add pagination stages
-        // pipeline.add(Aggregation.skip((long) page * pageSize)); // Skip documents based on page
-        // pipeline.add(Aggregation.limit(pageSize)); // Limit the number of results per page
+        pipeline.add(Aggregation.skip((long) page * pageSize)); // Skip documents based on page
+        pipeline.add(Aggregation.limit(pageSize)); // Limit the number of results per page
 
     
         // Execute the aggregation pipeline

@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/")
 public class RepoController {
 
@@ -43,6 +45,7 @@ public class RepoController {
     private String gitHubApiUrl;
 
     @GetMapping("/load-github-repos")
+    @CrossOrigin
     public ResponseEntity<String> fetchAndStoreRepositories() {
         String reposUrl = new UrlBuilder(gitHubApiUrl, owner).withAttribute("repos").build();
         log.info("Created url: "+ reposUrl);
@@ -59,11 +62,13 @@ public class RepoController {
     }
 
     @GetMapping("/fetch-all-repos")
+    @CrossOrigin
     public List<RepositoryInfo> getAllRepos(){
         return repos.findAll();
     }
 
     @GetMapping("/fetch-repos")
+    @CrossOrigin
     public Page<RepositoryInfo> getPaginatedRepos(
             @RequestParam(defaultValue = "0") int page, //Page number (default 0)
             @RequestParam(defaultValue = "10") int size //Page size (default 10)
@@ -74,20 +79,23 @@ public class RepoController {
     }
 
     @GetMapping("/fetch-repos/filter")
+    @CrossOrigin
     public ResponseEntity<List<RepositoryInfo>> filterAndSearchRepositories(
             @RequestParam(required = false) String search,
             @RequestParam(required = false) Boolean archived,
-            @RequestParam(required = false) String sortby) {
+            @RequestParam(required = false) String sortby,
+            @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "6") int pagesize) {
         /* Samples:
          GET /fetch-repos/filter?search=genetics&archived=false&sortby=forks_low_to_high
          GET /fetch-repos/filter
          GET /fetch-repos/filter?search=genetics
-         
+         http://localhost:8080/fetch-repos/filter?sortby=date_asc
          */
 
         log.info("{}, {}, {} are the parameters that are pssed", search, archived, sortby);
 
-        List<RepositoryInfo> results = repositoryService.filterAndSearchRepositories(search, archived, sortby);
+        List<RepositoryInfo> results = repositoryService.filterAndSearchRepositories(search, archived, sortby, page, pagesize);
         return ResponseEntity.ok(results);
             }
     
