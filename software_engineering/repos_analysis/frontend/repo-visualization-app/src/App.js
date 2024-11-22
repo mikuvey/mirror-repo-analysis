@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Search from "./Search";
 import SortFilter from "./SortFilter";
 import axios from "axios";
+import "./styles/App.css";
 
 const App = () => {
   const [repos, setRepos] = useState([]);
@@ -10,32 +11,60 @@ const App = () => {
   const [order, setOrder] = useState("desc");
   const [archived, setArchived] = useState("");
   const [page, setPage] = useState(0);
-  const [pageSize] = useState(10); // Fixed page size for now
+  const [pageSize] = useState(6);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [reset, setReset] = useState(false); // New flag for initial fetch/reset
 
   const fetchRepos = async () => {
-    try {
-      // Build the query parameters dynamically
-      const params = {
-        search: searchTerm || undefined,
-        sortBy: sortField,
-        order,
-        archived: archived || undefined,
-        page,
-        pageSize,
-      };
+    setLoading(true);
 
-      // Fetch data from the backend
+    const params = {
+      search: searchTerm || undefined,
+      sortBy: sortField,
+      order,
+      archived: archived || undefined,
+      page,
+      pageSize,
+    };
+
+    try {
       const response = await axios.get("http://localhost:8080/fetch-repos/filter", { params });
-      setRepos(response.data);
+
+      if (response.data.length < pageSize) {
+        setHasMore(false); // No more data
+      }
+
+      setRepos((prevRepos) =>
+        reset ? response.data : [...prevRepos, ...response.data]
+      );
+
+      setReset(false); // Reset flag after fetching
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching repositories:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Fetch repositories whenever the relevant state changes
+  // Fetch repositories when filters/search change (initial fetch)
+  useEffect(() => {
+    setRepos([]);
+    setPage(0);
+    setHasMore(true);
+    setReset(true); // Indicate reset for initial fetch
+  }, [searchTerm, sortField, order, archived]);
+
+  // Fetch repositories when the page changes
+  useEffect(() => {
+    if (reset || page === 0) return; // Skip if it's an initial fetch
+    fetchRepos();
+  }, [page]);
+
+  // Fetch initial repositories
   useEffect(() => {
     fetchRepos();
-  }, [searchTerm, sortField, order, archived, page]);
+  }, [reset]);
 
   return (
     <div>
@@ -46,36 +75,28 @@ const App = () => {
         onOrderChange={setOrder}
         onArchivedChange={setArchived}
       />
-      <div>
+      <div className="repo-grid">
         {repos.map((repo) => (
-          <div
-            key={repo.id}
-            style={{
-              margin: "10px 0",
-              padding: "10px",
-              border: "1px solid #ccc",
-            }}
-          >
+          <div key={repo.id} className="repo-card">
             <h3>{repo.name}</h3>
             <p>Stars: {repo.stargazers_count}</p>
             <p>Forks: {repo.forks_count}</p>
+            <p>Open Issues: {repo.open_issues_count}</p>
             <p>Last Updated: {new Date(repo.pushed_at).toLocaleDateString()}</p>
           </div>
         ))}
       </div>
-      {/* Pagination */}
-      <div style={{ margin: "20px 0" }}>
-        <button
-          onClick={() => setPage((prev) => Math.max(prev - 1, 0))}
-          disabled={page === 0}
-        >
-          Previous
+      {loading && <p>Loading...</p>}
+      {!loading && hasMore && (
+        <button onClick={() => setPage((prevPage) => prevPage + 1)} disabled={loading}>
+          Load More
         </button>
-        <span style={{ margin: "0 10px" }}>Page: {page + 1}</span>
-        <button onClick={() => setPage((prev) => prev + 1)}>Next</button>
-      </div>
+      )}
+      {!hasMore && <p>No more repositories to load.</p>}
     </div>
   );
 };
 
 export default App;
+
+
