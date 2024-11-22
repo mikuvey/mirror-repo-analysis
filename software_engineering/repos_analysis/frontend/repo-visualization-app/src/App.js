@@ -19,6 +19,7 @@ const App = () => {
 
   const fetchRepos = async () => {
     setLoading(true);
+
     const params = {
       search: searchTerm || undefined,
       sortBy: sortField,
@@ -28,12 +29,25 @@ const App = () => {
       pageSize,
     };
 
+    console.log("Fetching repositories with params:", params);
+
     try {
       const data = await fetchRepositories(params);
+      console.log(`Fetched ${data.length} repositories for page ${page}`);
+
       if (data.length < pageSize) {
         setHasMore(false);
+        console.log("No more repositories to fetch.");
       }
-      setRepos((prevRepos) => [...prevRepos, ...data]);
+
+      // Append new data while avoiding duplicates
+      setRepos((prevRepos) => {
+        const newRepos = data.filter(
+          (repo) => !prevRepos.some((existing) => existing.id === repo.id)
+        );
+        console.log("New repositories to append:", newRepos);
+        return [...prevRepos, ...newRepos];
+      });
     } catch (error) {
       console.error("Error fetching repositories:", error);
     } finally {
@@ -41,18 +55,28 @@ const App = () => {
     }
   };
 
+  // Handle page changes (Load More functionality)
   useEffect(() => {
     if (page > 0) {
+      console.log("Page changed:", page);
       fetchRepos();
     }
   }, [page]);
 
+  // Handle changes to search, sorting, or filters
   useEffect(() => {
-    setRepos([]);
-    setPage(0);
-    setHasMore(true);
+    console.log("Filters changed. Resetting repositories...");
+    console.log({ searchTerm, sortField, order, archived });
+    setRepos([]); // Clear existing repositories
+    setPage(0);   // Reset to the first page
+    setHasMore(true); // Reset the `hasMore` flag
     fetchRepos();
   }, [searchTerm, sortField, order, archived]);
+
+  // Debugging Repos State
+  useEffect(() => {
+    console.log("Repositories updated:", repos);
+  }, [repos]);
 
   return (
     <div>
