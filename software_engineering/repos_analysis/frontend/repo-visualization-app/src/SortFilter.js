@@ -20,14 +20,14 @@ const SortFilter = ({ onSort, onOrderChange, onArchivedChange}) => {
                 <select onChange={handleSortChange} style={{margin: "0 10px"}}>
                     <option value = "stars"> Stars</option>
                     <option value ="forks">Forks</option>
-                    <option value= "date">Date</option>
+                    <option value= "date">Last activity</option>
                 </select>
             </label>
             <label>
                 Order:
                 <select onChange={handleOrderChange} style={{margin: "0 10px"}}>
-                    <option value = "asc">Ascending</option>
                     <option value ="desc">Descending</option>
+                    <option value = "asc">Ascending</option>
                 </select>
             </label>
             <label>
