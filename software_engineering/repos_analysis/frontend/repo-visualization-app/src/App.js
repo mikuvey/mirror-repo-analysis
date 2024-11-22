@@ -1,58 +1,54 @@
-import React, { useState, useEffect } from 'react';
-import Filters from './components/Filters';
-import RepositoryList from './components/RepositoryList';
-import { fetchRepositories } from './services/api';
+import React, { useState, useEffect } from "react";
+import Search from "./Search";
+import axios from "axios";
 
 const App = () => {
-  const [repositories, setRepositories] = useState([]);
-  const [search, setSearch] = useState('');
-  const [archived, setArchived] = useState('');
-  const [sortBy, setSortBy] = useState('stars_high_to_low');
-  const [page, setPage] = useState(0);
-  const [pageSize] = useState(10);
-  const [hasMore, setHasMore] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [repos, setRepos] = useState([]);
+  const [filteredRepos, setFilteredRepos] = useState([]);
 
-  const loadRepositories = async () => {
-    try {
-      const data = await fetchRepositories({ search, archived, sortBy, page, pageSize });
-      if (data.length < pageSize) setHasMore(false);
-      setRepositories((prev) => [...prev, ...data]);
-    } catch (error) {
-      console.error('Error fetching repositories:', error);
+  //Fetch all repositories when the component loads
+  useEffect(() => {
+    const fetchRepos = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/fetch-repos/filter");
+        setRepos(response.data);
+        setFilteredRepos(response.data); //Initially display all repos
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchRepos();
+  }, []);
+
+  //Filter the repositories based on the search term
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+    if (term.trim() === "") {
+      setFilteredRepos(repos); //Show all repos if the search term is empty
+    } else {
+      setFilteredRepos(
+        repos.filter((repo) => repo.name.toLowerCase().includes(term.toLowerCase()))
+      );
     }
   };
 
-  useEffect(() => {
-    setRepositories([]);
-    setPage(0);
-    setHasMore(true);
-    loadRepositories();
-  }, [search, archived, sortBy]);
-
-  const handleLoadMore = () => {
-    setPage((prev) => prev + 1);
-  };
-
-  useEffect(() => {
-    if (page > 0) loadRepositories();
-  }, [page]);
-
   return (
     <div>
-      <h1>Repository Browser</h1>
-      <Filters
-        search={search}
-        setSearch={setSearch}
-        archived={archived}
-        setArchived={setArchived}
-        sortBy={sortBy}
-        setSortBy={setSortBy}
-      />
-      <RepositoryList
-        repositories={repositories}
-        onLoadMore={handleLoadMore}
-        hasMore={hasMore}
-      />
+      <h1>Fetch Repositories</h1>
+      <Search onSearch={handleSearch} />
+      <div>
+        {filteredRepos.map((repo) => (
+          <div key={repo.id} style={{ margin: "10px 0", padding: "10px", border: "1px solid #ccc" }}>
+            <h3>{repo.name}</h3>
+            <p>Stars: {repo.stargazers_count}</p>
+            <p>Forks: {repo.forks_count}</p>
+            <p>Open issues: {repo.open_issues_count}</p>
+            <p>Last activity: {repo.pushed_at}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
