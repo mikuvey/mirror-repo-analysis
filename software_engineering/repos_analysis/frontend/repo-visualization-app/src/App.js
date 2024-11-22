@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
+import Chart from "./components/TestChart";
 import Search from "./components/Search";
 import SortFilter from "./components/SortFilter";
 import RepoList from "./components/RepoList";
-import Pagination from "./components/Pagination";
 import { fetchRepositories } from "./services/api";
 import "./styles/App.css";
 
@@ -16,6 +16,12 @@ const App = () => {
   const [pageSize] = useState(6);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
+
+  // Sample chart data
+  const chartData = repos.map((repo) => ({
+    name: repo.name,
+    value: repo.stargazers_count,
+  }));
 
   const fetchRepos = async () => {
     setLoading(true);
@@ -63,10 +69,14 @@ const App = () => {
 
   return (
     <div className="app-container">
-      <header>Fetch Repositories</header>
+      <header>Brown CCV Repo Analysis</header>
+
+      {/* Chart Section */}
+      <Chart data={chartData} />
+
       <main className="content-container">
         <div className="filters">
-          <Search onSearch={setSearchTerm} />
+        <Search onSearch={setSearchTerm} />
           <SortFilter
             onSort={setSortField}
             onOrderChange={setOrder}
@@ -84,7 +94,8 @@ const App = () => {
       </main>
       <footer>Made with ❤️ by mikuvey</footer>
     </div>
-  );  
+  );
 };
 
 export default App;
+

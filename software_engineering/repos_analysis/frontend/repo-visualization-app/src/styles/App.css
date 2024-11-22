@@ -9,10 +9,10 @@ body {
 
 /* Header */
 header {
-  background-color: #007bff;
+  background-color: #095bb3;
   color: white;
   padding: 10px 20px;
-  text-align: center;
+  text-align:left;
   font-size: 24px;
   font-weight: bold;
 }
@@ -106,7 +106,7 @@ button:disabled {
 footer {
   text-align: center;
   padding: 20px;
-  background-color: #007bff;
+  background-color: #095bb3;
   color: white;
   /* margin-top: 20px; */
 }
