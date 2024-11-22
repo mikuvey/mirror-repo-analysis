@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import Chart from "./components/TestChart";
+import Chart from "./components/BarChart";
+import MetricSelector from "./components/MetricSelector";
 import Search from "./components/Search";
 import SortFilter from "./components/SortFilter";
 import RepoList from "./components/RepoList";
@@ -13,14 +14,16 @@ const App = () => {
   const [order, setOrder] = useState("desc");
   const [archived, setArchived] = useState("");
   const [page, setPage] = useState(0);
-  const [pageSize] = useState(6);
+  const [pageSize] = useState(10);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
-
+  const [selectedMetrics, setSelectedMetrics] = useState(["stars", "forks", "issues"]);
   // Sample chart data
   const chartData = repos.map((repo) => ({
     name: repo.name,
-    value: repo.stargazers_count,
+    stars: repo.stargazers_count,
+    forks: repo.forks_count,
+    issues: repo.open_issues_count,
   }));
 
   const fetchRepos = async () => {
@@ -72,8 +75,13 @@ const App = () => {
       <header>Brown CCV Repo Analysis</header>
 
       {/* Chart Section */}
-      <Chart data={chartData} />
+      <MetricSelector
+        selectedMetrics={selectedMetrics}
+        onChange={setSelectedMetrics}
+      />
+      <Chart data={chartData} selectedMetrics={selectedMetrics} />
 
+      {/* Search and filters*/}
       <main className="content-container">
         <div className="filters">
         <Search onSearch={setSearchTerm} />

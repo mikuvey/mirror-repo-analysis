@@ -111,6 +111,21 @@ footer {
   /* margin-top: 20px; */
 }
 
+/* Metric Selector */
+.metric-selector {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  gap: 20px;
+}
+
+.metric-selector label {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  gap: 5px;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .filters {
