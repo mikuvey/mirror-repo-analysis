@@ -29,23 +29,16 @@ const App = () => {
       pageSize,
     };
 
-    console.log("Fetching repositories with params:", params);
-
     try {
       const data = await fetchRepositories(params);
-      console.log(`Fetched ${data.length} repositories for page ${page}`);
-
       if (data.length < pageSize) {
         setHasMore(false);
-        console.log("No more repositories to fetch.");
       }
 
-      // Append new data while avoiding duplicates
       setRepos((prevRepos) => {
         const newRepos = data.filter(
           (repo) => !prevRepos.some((existing) => existing.id === repo.id)
         );
-        console.log("New repositories to append:", newRepos);
         return [...prevRepos, ...newRepos];
       });
     } catch (error) {
@@ -55,42 +48,43 @@ const App = () => {
     }
   };
 
-  // Handle page changes (Load More functionality)
   useEffect(() => {
     if (page > 0) {
-      console.log("Page changed:", page);
       fetchRepos();
     }
   }, [page]);
 
-  // Handle changes to search, sorting, or filters
   useEffect(() => {
-    console.log("Filters changed. Resetting repositories...");
-    console.log({ searchTerm, sortField, order, archived });
-    setRepos([]); // Clear existing repositories
-    setPage(0);   // Reset to the first page
-    setHasMore(true); // Reset the `hasMore` flag
+    setRepos([]);
+    setPage(0);
+    setHasMore(true);
     fetchRepos();
   }, [searchTerm, sortField, order, archived]);
 
-  // Debugging Repos State
-  useEffect(() => {
-    console.log("Repositories updated:", repos);
-  }, [repos]);
-
   return (
-    <div>
-      <h1>Fetch Repositories</h1>
-      <Search onSearch={setSearchTerm} />
-      <SortFilter
-        onSort={setSortField}
-        onOrderChange={setOrder}
-        onArchivedChange={setArchived}
-      />
-      <RepoList repos={repos} />
-      <Pagination hasMore={hasMore} loading={loading} setPage={setPage} />
+    <div className="app-container">
+      <header>Fetch Repositories</header>
+      <main className="content-container">
+        <div className="filters">
+          <Search onSearch={setSearchTerm} />
+          <SortFilter
+            onSort={setSortField}
+            onOrderChange={setOrder}
+            onArchivedChange={setArchived}
+          />
+        </div>
+        <RepoList repos={repos} />
+        <div style={{ textAlign: "center", padding: "20px" }}>
+          {loading && <p>Loading...</p>}
+          {!loading && hasMore && (
+            <button onClick={() => setPage((prevPage) => prevPage + 1)}>Load More</button>
+          )}
+          {!hasMore && <p>No more repositories to load.</p>}
+        </div>
+      </main>
+      <footer>Made with ❤️ by mikuvey</footer>
     </div>
-  );
+  );  
 };
 
 export default App;
