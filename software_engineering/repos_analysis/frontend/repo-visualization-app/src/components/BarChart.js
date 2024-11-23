@@ -38,7 +38,6 @@ const Chart = ({ data, selectedMetrics }) => {
             {selectedMetrics.includes("issues") && (
               <Bar dataKey="issues" stackId="a" fill="#ffc658" name="Open Issues" />
             )}
-          <Bar dataKey="value" fill="#8884d8" />
         </BarChart>
       </ResponsiveContainer>
     </div>
