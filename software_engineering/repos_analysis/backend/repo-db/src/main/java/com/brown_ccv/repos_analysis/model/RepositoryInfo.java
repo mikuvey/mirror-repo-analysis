@@ -19,6 +19,7 @@ public class RepositoryInfo {
     private int forks_count;
     private int open_issues_count;
     private List<String> topics;
+    private Date created_at;
     private Date pushed_at;
     
     //Lombok will take care of getters and setters and toString
