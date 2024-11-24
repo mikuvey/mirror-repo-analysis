@@ -1,4 +1,4 @@
-/* Global styles */
+/*Global styles */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -8,14 +8,61 @@ body {
 }
 
 /* Header */
-header {
+.header-container {
   background-color: #095bb3;
   color: white;
   padding: 10px 20px;
-  text-align:left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   font-size: 24px;
   font-weight: bold;
 }
+
+/* Sync Button */
+.refresh-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 30px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.refresh-button:hover {
+  background-color: #0b72d3;
+}
+
+.refresh-button:disabled {
+  color: #ddd;
+  cursor: not-allowed;
+}
+
+.refresh-icon {
+  font-size: 18px;
+  animation: none;
+  transition: transform 0.2s ease;
+}
+
+.refreshing {
+  animation: spin 1s linear infinite;
+}
+
+/* Keyframe for spinning animation */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 
 /* Charts */
 .charts-container {
@@ -51,6 +98,43 @@ header {
   margin: 5px;
   border: 1px solid #ddd;
   border-radius: 5px;
+}
+
+/* Page size container */
+.page-size-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.page-size-container input {
+  width: 60px; /* Slightly wider for better visibility */
+  padding: 5px 10px;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  font-size: 14px;
+  text-align: center; /* Center-align the text */
+  outline: none;
+}
+
+.page-size-container input::placeholder {
+  color: #888; /* Lighter color for the placeholder */
+  font-style: italic;
+}
+
+.page-size-container button {
+  padding: 6px 12px;
+  background-color: #0366d6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.page-size-container button:hover {
+  background-color: #024bb5;
 }
 
 /* Repository Grid */
@@ -115,7 +199,8 @@ button:disabled {
 }
 
 .content-container {
-  flex: 1;
+  flex: 1 0 0;
+  justify-content: center;
 }
 
 /* Footer */
@@ -140,51 +225,6 @@ footer {
   align-items: center;
   font-size: 14px;
   gap: 5px;
-}
-
-/* Page size container */
-.page-size-container {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-/* .page-size-container input {
-  width: 100px;
-  padding: 5px 10px;
-  border: 1px solid #d0d7de;
-  border-radius: 6px;
-  font-size: 14px;
-  outline: none;
-} */
-.page-size-container input {
-  width: 60px; /* Slightly wider for better visibility */
-  padding: 5px 10px;
-  border: 1px solid #d0d7de;
-  border-radius: 6px;
-  font-size: 14px;
-  text-align: center; /* Center-align the text */
-  outline: none;
-}
-
-.page-size-container input::placeholder {
-  color: #888; /* Lighter color for the placeholder */
-  font-style: italic;
-}
-
-.page-size-container button {
-  padding: 6px 12px;
-  background-color: #0366d6;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.page-size-container button:hover {
-  background-color: #024bb5;
 }
 
 /* Responsive Design */
