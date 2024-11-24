@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:8080/fetch-repos/filter";
-const REFRESH_URL = "http://localhost:8080/load-github-repos";
+const BASE_URL = process.env.REACT_APP_API_URL+"fetch-repos/filter";
+const REFRESH_URL = process.env.REACT_APP_API_URL+"load-github-repos";
 
 export const fetchRepositories = async (params) => {
   try {
