@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,7 +45,7 @@ public class RepoController {
     @Value("${repos.url}")
     private String gitHubApiUrl;
 
-    @GetMapping("/load-github-repos")
+    @PostMapping("/load-github-repos")
     @CrossOrigin
     public ResponseEntity<String> fetchAndStoreRepositories() {
         String reposUrl = new UrlBuilder(gitHubApiUrl, owner).withAttribute("repos").build();
@@ -53,9 +54,9 @@ public class RepoController {
         try {
             fetchService.fetchAndSaveData(reposUrl);
             log.info("Repositories successfully fetched and stored in MongoDB.");
-            return ResponseEntity.ok("Repositories successfully fetched and stored in MongoDB.");
+            return ResponseEntity.ok("Succefully refresed");
         } catch (Exception e) {
-            log.info("An error occurred while fetching and storing repositories.");
+            log.info("An error occurred while loading repositories to DB");
             e.printStackTrace();
             return ResponseEntity.status(500).body("An error occurred while fetching and storing repositories.");
         }

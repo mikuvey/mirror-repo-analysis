@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -14,23 +15,36 @@ import org.springframework.stereotype.Service;
 
 import com.brown_ccv.repos_analysis.model.RepositoryInfo;
 
+
+
 @Service
 public class RepositoryService {
     @Autowired
     private MongoTemplate mongoTemplate;
+
+    @Value("${search.index}")
+    private String index;
 
     public List<RepositoryInfo> filterAndSearchRepositories(String search, Boolean archived, String sortBy, String order, int page, int pageSize) {
         List<AggregationOperation> pipeline = new ArrayList<>();
     
         // If search is provided, use $search
         if (search != null && !search.isEmpty()) {
+            // pipeline.add(context -> new Document("$search", 
+            //     new Document("index", "search-repo-names")
+            //     .append("text", 
+            //         new Document("query", search)
+            //         .append("path", "name")
+            //     )
+            // ));
+
             pipeline.add(context -> new Document("$search", 
-                new Document("index", "search-repo-names")
-                .append("text", 
-                    new Document("query", search)
-                    .append("path", "name")
-                )
-            ));
+            new Document("index", index)
+                    .append("autocomplete", 
+            new Document("query", search)
+                        .append("path", "name")
+                        .append("fuzzy", 
+            new Document("maxEdits", 1L)))));
         }
     
         // Filter by archived status if provided

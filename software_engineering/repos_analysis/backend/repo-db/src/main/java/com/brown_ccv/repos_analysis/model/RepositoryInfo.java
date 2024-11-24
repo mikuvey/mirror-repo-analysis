@@ -21,6 +21,7 @@ public class RepositoryInfo {
     private List<String> topics;
     private Date created_at;
     private Date pushed_at;
+    private String html_url;
     
     //Lombok will take care of getters and setters and toString
 }
