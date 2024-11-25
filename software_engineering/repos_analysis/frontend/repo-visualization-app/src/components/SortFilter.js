@@ -14,7 +14,7 @@ const SortFilter = ({ onSort, onOrderChange, onArchivedChange}) => {
     };
 
     return (
-        <div style = {{ margin: "20px 0"}}>
+        <div style = {{"display":"flex","flexDirection":"row","alignItems":"center"}}>
             <label>
                 Sort by:
                 <select onChange={handleSortChange} style={{margin: "0 10px"}}>

@@ -11,6 +11,12 @@ import {
 } from "recharts";
 
 const Chart = ({ data, selectedMetrics }) => {
+  //Animation delay configuration
+  const animationConfig = {
+    animationDuration: 1000, //in ms
+    animationBegin: 300,
+  };
+
   return (
     <div style={{ width: "100%", height: 400 }}>
       <ResponsiveContainer>
@@ -28,15 +34,15 @@ const Chart = ({ data, selectedMetrics }) => {
           <YAxis />
           <Tooltip />
           <Legend />
-            {/* Conditionally render bars based on selected metrics */}
+            {/*Render bars */}
             {selectedMetrics.includes("stars") && (
-              <Bar dataKey="stars" stackId="a" fill="#8884d8" name="Stars" />
+              <Bar dataKey="stars" stackId="a" fill="#8884d8" name="Stars" {...animationConfig}/>
             )}
             {selectedMetrics.includes("forks") && (
-              <Bar dataKey="forks" stackId="a" fill="#82ca9d" name="Forks" />
+              <Bar dataKey="forks" stackId="a" fill="#82ca9d" name="Forks" {...animationConfig}/>
             )}
             {selectedMetrics.includes("issues") && (
-              <Bar dataKey="issues" stackId="a" fill="#ffc658" name="Open Issues" />
+              <Bar dataKey="issues" stackId="a" fill="#ffc658" name="Open Issues" {...animationConfig}/>
             )}
         </BarChart>
       </ResponsiveContainer>

@@ -5,7 +5,7 @@ import Search from "./components/Search";
 import SortFilter from "./components/SortFilter";
 import RepoList from "./components/RepoList";
 import { fetchRepositories, refreshRepositories } from "./services/api";
-import "bootstrap-icons/font/bootstrap-icons.css"; // Import Bootstrap Icons
+import "bootstrap-icons/font/bootstrap-icons.css";
 import "./styles/App.css";
 
 const App = () => {
@@ -15,7 +15,7 @@ const App = () => {
   const [order, setOrder] = useState("desc");
   const [archived, setArchived] = useState("");
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(6);
+  const [pageSize, setPageSize] = useState(6); //Defaults to 6 repos per page
   const [customPageSize, setCustomPageSize] = useState(6);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -23,6 +23,7 @@ const App = () => {
 
   const [selectedMetrics, setSelectedMetrics] = useState(["stars", "forks", "issues"]);
 
+  //Map repos data with reCharts elements
   const chartData = repos.map((repo) => ({
     name: repo.name,
     stars: repo.stargazers_count,
@@ -30,6 +31,7 @@ const App = () => {
     issues: repo.open_issues_count,
   }));
 
+  //Asynchronously fetchRepos from db based on query parameters
   const fetchRepos = async () => {
     setLoading(true);
 
@@ -61,6 +63,7 @@ const App = () => {
     }
   };
 
+  //Handle DB sync with Github
   const handleRefresh = async () => {
     setRefreshing(true);
     try {
@@ -89,22 +92,15 @@ const App = () => {
     fetchRepos();
   }, [searchTerm, sortField, order, archived, pageSize]);
 
-  // const handlePageSizeChange = () => {
-  //   if (customPageSize > 0) {
-  //     setPageSize(customPageSize);
-  //     setRepos([]);
-  //     setPage(0);
-  //     setHasMore(true);
-  //   }
-  // };
   const handlePageSizeChange = async () => {
     if (customPageSize > 0) {
-      setRepos([]); // Clear existing repositories
+      setRepos([]); //Clear existing repos
       setPageSize(customPageSize);
-      setPage(0); // Reset pagination
-      setHasMore(true); // Reset loading state
+      setPage(0); //Reset pagination
+      setHasMore(true);
   
-      // Fetch repositories immediately after updating page size
+      //Fetch repositories immediately after updating page size
+      //Future work: cut duplicating code
       try {
         setLoading(true);
         const params = {
@@ -113,7 +109,7 @@ const App = () => {
           order,
           archived: archived || undefined,
           page: 0,
-          pageSize: customPageSize, // Use the updated page size
+          pageSize: customPageSize,
         };
   
         const data = await fetchRepositories(params);
@@ -140,28 +136,36 @@ const App = () => {
           {refreshing ? "Syncing..." : ""}
         </button>
       </header>
+
       <main className="content-container">
         <div className="filters">
-          <Search onSearch={setSearchTerm} />
-          <SortFilter
-            onSort={setSortField}
-            onOrderChange={setOrder}
-            onArchivedChange={setArchived}
-          />
-          <div className="page-size-container">
-            <input
-              type="number"
-              min="1"
-              placeholder="#repos"
-              value={customPageSize}
-              onChange={(e) => setCustomPageSize(Number(e.target.value))}
+          <div className="search-elements">
+            <Search onSearch={setSearchTerm} />
+          </div>
+          <div className="filter">
+            <SortFilter
+              onSort={setSortField}
+              onOrderChange={setOrder}
+              onArchivedChange={setArchived}
             />
-            <button onClick={handlePageSizeChange} disabled={loading}>
-              {loading ? "Loading..." : "Load"}
-            </button>
+            {/* Repo loader */}
+            <div className="page-size-container">
+              <label className="form-label">#repos</label>
+              <input
+                  type="number"
+                  value={customPageSize}
+                  onChange={(e) => setCustomPageSize(Number(e.target.value))}
+                  className="form-control"
+                  style={{"marginBottom": "2px"}}
+                />
+                <button onClick={handlePageSizeChange} disabled={loading} style={{"marginLeft":"10px","borderRadius":"90px", "backgroundColor":"#07182c"}}>
+                  {loading ? "Loading..." : "Load"}
+                </button>
+            </div>
           </div>
         </div>
 
+        {/* Select metrics to show on charts */}
         <MetricSelector
           selectedMetrics={selectedMetrics}
           onChange={setSelectedMetrics}

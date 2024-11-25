@@ -1,7 +1,6 @@
 package com.brown_ccv.repos_analysis.controller;
 
 import com.brown_ccv.repos_analysis.model.RepositoryInfo;
-import com.brown_ccv.repos_analysis.repository.MongoRepo;
 import com.brown_ccv.repos_analysis.service.PaginationFetchService;
 import com.brown_ccv.repos_analysis.service.RepositoryService;
 import com.brown_ccv.repos_analysis.utils.UrlBuilder;
@@ -12,8 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,8 +34,8 @@ public class RepoController {
     @Autowired
     private RepositoryService repositoryService;
 
-    @Autowired
-    private MongoRepo repos;
+    // @Autowired
+    // private MongoRepo repos;
 
     @Value("${repos.owner}")
     private String owner;
@@ -63,23 +60,6 @@ public class RepoController {
         }
     }
 
-    @GetMapping("/fetch-all-repos")
-    @CrossOrigin
-    public List<RepositoryInfo> getAllRepos(){
-        return repos.findAll();
-    }
-
-    @GetMapping("/fetch-repos")
-    @CrossOrigin
-    public Page<RepositoryInfo> getPaginatedRepos(
-            @RequestParam(defaultValue = "0") int page, //Page number (default 0)
-            @RequestParam(defaultValue = "10") int size //Page size (default 10)
-    ) {
-        /* Sample request: GET /fetch-repos?page=1&size=5 */
-        PageRequest pageable = PageRequest.of(page, size);
-        return repos.findAll(pageable);
-    }
-
     @GetMapping("/fetch-repos/filter")
     @CrossOrigin
     public ResponseEntity<List<RepositoryInfo>> filterAndSearchRepositories(
@@ -89,19 +69,18 @@ public class RepoController {
         @RequestParam(required = false, defaultValue = "desc") String order,
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int pageSize) {
-        
-        /* Samples:
-    //      GET /fetch-repos/filter?search=genetics
-    //      GET /fetch-repos/filter
-    //      GET /fetch-repos/filter?search=genetics
-    //      http://localhost:8080/fetch-repos/filter?sortby=date_asc
+        /* Samples Api calls:
+            GET /fetch-repos/filter?search=genetics
+            GET /fetch-repos/filter
+            GET /fetch-repos/filter?search=genetics
+            http://localhost:8080/fetch-repos/filter?sortby=date_asc
             GET /filter?sortBy=issues&order=desc
 
-    //      */
-
-    List<RepositoryInfo> results = repositoryService.filterAndSearchRepositories(search, archived, sortBy, order, page, pageSize);
-    return ResponseEntity.ok(results);
-}
+         */
+        log.info("Fetching repos from DB...");
+        List<RepositoryInfo> results = repositoryService.filterAndSearchRepositories(search, archived, sortBy, order, page, pageSize);
+        return ResponseEntity.ok(results);
+    }
 
     
 }

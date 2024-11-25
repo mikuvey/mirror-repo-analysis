@@ -15,9 +15,12 @@ import org.springframework.stereotype.Service;
 
 import com.brown_ccv.repos_analysis.model.RepositoryInfo;
 
+import lombok.extern.slf4j.Slf4j;
+
 
 
 @Service
+@Slf4j
 public class RepositoryService {
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -28,15 +31,8 @@ public class RepositoryService {
     public List<RepositoryInfo> filterAndSearchRepositories(String search, Boolean archived, String sortBy, String order, int page, int pageSize) {
         List<AggregationOperation> pipeline = new ArrayList<>();
     
-        // If search is provided, use $search
+        //Search with autocomplete (refer mongoDB aggregation pipeline for more info)
         if (search != null && !search.isEmpty()) {
-            // pipeline.add(context -> new Document("$search", 
-            //     new Document("index", "search-repo-names")
-            //     .append("text", 
-            //         new Document("query", search)
-            //         .append("path", "name")
-            //     )
-            // ));
 
             pipeline.add(context -> new Document("$search", 
             new Document("index", index)
@@ -47,33 +43,35 @@ public class RepositoryService {
             new Document("maxEdits", 1L)))));
         }
     
-        // Filter by archived status if provided
+        //Filter by archived status if provided
         if (archived != null) {
             pipeline.add(Aggregation.match(Criteria.where("archived").is(archived)));
         }
     
-        // Sort the results
+        //Sort the results
         pipeline.add(Aggregation.sort(getSortOrder(sortBy, order)));
     
-        // Add pagination stages
-        pipeline.add(Aggregation.skip((long) page * pageSize)); // Skip documents based on page
-        pipeline.add(Aggregation.limit(pageSize)); // Limit the number of results per page
+        //Add pagination stages
+        pipeline.add(Aggregation.skip((long) page * pageSize));
+        pipeline.add(Aggregation.limit(pageSize));
     
-        // Execute the aggregation pipeline
+        //Execute the aggregation pipeline
         Aggregation aggregation = Aggregation.newAggregation(pipeline);
-        return mongoTemplate.aggregate(aggregation, "repositories", RepositoryInfo.class).getMappedResults();
+        List<RepositoryInfo> ret = mongoTemplate.aggregate(aggregation, "repositories", RepositoryInfo.class).getMappedResults();
+        log.info("{} repos fetched from DB", ret.size());
+        return ret;
     }
     
     private Sort getSortOrder(String sortBy, String order) {
-        // Default sorting field
+        //Default sorting field
         if (sortBy == null || sortBy.isEmpty()) {
             sortBy = "stars"; // Default to stars
         }
     
-        // Determine sorting direction
+        //OrderBy
         Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
     
-        // Map sortBy to corresponding database field
+        //Sorting parameters
         switch (sortBy) {
             case "stars":
                 return Sort.by(direction, "stargazers_count");

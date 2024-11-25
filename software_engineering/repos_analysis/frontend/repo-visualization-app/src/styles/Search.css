@@ -1,52 +1,84 @@
 /* Wrapper for search box */
 .search-container {
-    position: relative;
-    width: 400px;
-    margin: 0;
-    display: flex;
-    align-items: center;
-  }
-  
-  /* Input field styling */
-  .search-input {
-    position: absolute;
-    width: 100%;
-    /* width: 600px; */
-    padding: 10px 50px; /* Add space for the icon */
-    border: 1px solid #d0d7de;
-    border-radius: 6px;
-    font-size: 14px;
-    background-color: #ffffff;
-    color: #24292f;
-    outline: none;
-    transition: border-color 0.2s ease;
-  }
-  
-  .search-input:focus {
-    border-color: #0366d6;
-  }
-  
-  /* Placeholder styling */
-    .search-input::placeholder {
-    color: #6e7781;
-    font-size: 14px;
-    position: relative;
-    left: 15px; /* Optional fine-tuning for placeholder position */
-  }
-  
-  /* GitHub icon styling */
-  .icon {
-    position: absolute;
-    left: 10px; /* Position inside the input */
-    color: #57606a;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none; /* Prevent interaction with the icon */
-  }
+  position: relative;
+  width: 600px;
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
 
-  .github-icon {
-    width: 16px;
-    height: 16px;
+.inputBar{
+  padding: 10px;
+  margin: 10px;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 80px;
+  width: 600px; /* Increased width for a longer appearance */
+  height: 20px; /* Reduced height for a thinner appearance */
+  display: flex;
+  /* justify-content: flex-start; */
+  box-shadow: #07182c 2px 2px;
+                                              
+}
+
+.actualInput{
+  display: flex;
+  align-items: center;
+}
+/* Input field styling */
+.icon {
+  flex: 0.08;
+  /* left: 15px; Position inside the input */
+  color: #57606a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none; /* Prevent interaction with the icon */
+  /* margin-right: 100px; */
+  padding: 0;
+}
+
+.github-icon {
+  width: 25px;
+  height: 25px;
+  left:-10px;
+}
+
+.search-input {
+  width: 500px;
+  outline: none;
+  background-color: white;
+  margin-left:0px;
+  left:0px;
+  height: 15px;
+  font-size: 20px;
+}
+
+.inputBar:hover {
+  border-color: #0366d6;
+  box-shadow: #0366d6 2px 2px;
+}
+
+/* Placeholder styling */
+  .search-input::placeholder {
+  color: #6e7781;
+  font-size: 15px;
+  position: relative;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  left: 0px; /*Optional fine-tuning for placeholder position*/
+  margin-left: 0;
+}
+
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
   }
-  
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 12px;
+  }
+}
+

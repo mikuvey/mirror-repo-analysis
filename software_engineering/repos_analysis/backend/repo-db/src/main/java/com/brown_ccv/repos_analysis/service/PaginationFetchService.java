@@ -6,7 +6,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -35,19 +34,17 @@ public class PaginationFetchService {
 
         do {
             log.info("Repositories exists");
-            // Fetch the current page of repositories
             HttpEntity<String> entity = new HttpEntity<>(new HttpHeaders());
             responseEntity = restTemplate.exchange(url, org.springframework.http.HttpMethod.GET, entity, RepositoryInfo[].class);
             
-            // Save each repository from the current page into MongoDB
             List<RepositoryInfo> currentRepositories = Arrays.asList(responseEntity.getBody());
-            // System.out.println(currentRepositories);
             log.info(currentRepositories.size() + " records Fetched");
 
-            currentRepositories.forEach(mongoRepository::save); // Save each repository to MongoDB
+            //load to mongo
+            currentRepositories.forEach(mongoRepository::save);
             log.info(currentRepositories.size() + " records saved into mongoDB");
 
-            // Check for the next page URL
+            //Check for the next page
             url = getNextPageUrl(responseEntity.getHeaders());
             log.info("Checking for more data.....");
 
@@ -57,13 +54,13 @@ public class PaginationFetchService {
     private String getNextPageUrl(HttpHeaders headers) {
         List<String> linkHeader = headers.get("Link");
         if (linkHeader != null && !linkHeader.isEmpty()) {
-            // Parse the link header to find the 'next' page URL
+            //Parse the link header
             for (String link : linkHeader) {
                 if (link.contains("rel=\"next\"")) {
                     return link.split(";")[0].trim().replace("<", "").replace(">", "");
                 }
             }
         }
-        return null;  // No next page
+        return null;  //No next page
     }
 }

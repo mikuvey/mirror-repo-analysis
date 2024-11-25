@@ -11,7 +11,7 @@
 	<groupId>com.brown-ccv</groupId>
 	<artifactId>repos-db</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 	<name>repos-db</name>
 	<description>Repository analysis for archiving repositories</description>
 	<url/>
