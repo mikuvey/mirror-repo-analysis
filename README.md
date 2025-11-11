@@ -1,40 +1,156 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/Tg6SDNM7)
-[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-2e0aaae1b6195c2367325f4f02e2d04e9abb55f0b24a779b69b11b9e10269abc.svg)](https://classroom.github.com/online_ide?assignment_repo_id=17073351&assignment_repo_type=AssignmentRepo)
-# CCV Data Scientist and Research Software Engineering Assignments
+# Mirror Repo Analysis
 
-Thank you for taking the time to complete this programming assignment. Through this exercise, we seek to get an insight into your:
-* knowledge and skills in data science and software engineering
-* approach to problem solving
-* software development practices
+Mirror Repo Analysis is Brown CCV's repository analysis platform that visualizes and analyzes GitHub repository data for the organization. It consists of a Spring Boot backend (`Repo-DB`) and a React frontend (`Repo-Visualization`).
 
-Members of our group come from very diverse backgrounds. We understand that methodologies vary greatly depending on your background. While we provide some guidance on technology and approach, you are welcome to use the approach and technology that you are most comfortable with and gives you a fair opportunity to complete the assignment and show us your best work.
+## Table of Contents
+- [Mirror Repo Analysis](#mirror-repo-analysis)
+- [Overview](#overview)
+- [Project Structure](#project-structure)
+- [Requirements](#requirements)
+- [Quick Start](#quick-start)
+- [Configuration](#configuration)
+- [Running the Application](#running-the-application)
+- [API Documentation](#api-documentation)
+- [Demo](#demo)
+- [Credits](#credits)
+- [Troubleshooting](#troubleshooting)
+- [License](#license)
 
-If completing this assignment would be an undue burden, please reach out and we will work with you to find another way to assess your technical experience.
+## Overview
 
-## Organization
+This full-stack application provides tools to:
+- Fetch and store GitHub repository data from the Brown CCV organization
+- Analyze and filter repository information
+- Visualize repository metrics and insights through an interactive web interface
 
-There are two options for assignments:
-* a [data science assignment](/data_science) where you review a publication and implement one of the methods described
-* a [software engineering assignment](/software_engineering) where you code an interactive summary or visualization
+## Project Structure
 
-Both assignments also provide for the opportunity to share work you have already done and that you think represents your skills well.
+```
+mirror-repo-analysis/
+├── backend/
+│   └── repo-db/              # Spring Boot backend API
+├── frontend/
+│   └── repo-visualization-app/  # React frontend application
+└── README.md
+```
 
-**Feel free to read and submit either of the assignments.** For instance, if you have applied for a Data Scientist position, but think the Software Engineering assignment will give you an opportunity to better showcase your technical strengths, then feel free to submit the Software Engineering assignment. 
+## Requirements
 
-## Time to completion
-This will be detailed in the email from John.
+### Backend
+- [JDK 11](https://www.oracle.com/java/technologies/downloads/#jdk21-mac) and above
+- [Maven 3.9.9](https://maven.apache.org/download.cgi)
+- [MongoDB Atlas cloud](https://www.mongodb.com/products/platform/atlas-database) or [Local MongoDB server](https://www.mongodb.com/try/download/community)
 
-## Use of Large Language Models (LLMs)
+### Frontend
+- [NodeJS v22.11.0](https://nodejs.org/en/download/source-code)
 
-We'd prefer you don't use an LLM for this assignment. 
+## Quick Start
 
-We know that a lot of people use LLMs in their day-to-day work, including many in our group. However, what we're really trying to understand with these exercises is how _you_ think, and what _you_ value in code. 
+### 1. Clone and Navigate
+```bash
+git clone <repository-url>
+cd mirror-repo-analysis
+```
 
-If you did use an LLM, tell us _how_ you used it, because that may help differentiate your application. Please share with us:
-- Any prompts you gave it,
-- Why you chose that way of using the LLM rather than any other way,
-- Whether the LLM helped or hindered your output, and 
-- Whether you decided to use its output in the end, and why.
+### 2. Start the Backend
+```bash
+cd backend/repo-db
+./mvnw spring-boot:run
+```
+The backend will run on `http://localhost:8080/`
 
-## After completion
-It usually takes us a couple of weeks to go through assignments. Continuing candidates will be invited for an on-site interview day.  
+### 3. Start the Frontend
+In a new terminal:
+```bash
+cd frontend/repo-visualization-app
+npm install
+npm start
+```
+The frontend will run on `http://localhost:3000/`
+
+## Configuration
+
+### Backend Configuration
+See [backend/repo-db/README.md](backend/repo-db/README.md) for detailed MongoDB setup instructions (Cloud Atlas or Local).
+
+**Default connection** uses MongoDB Atlas cloud (already configured). Update `backend/repo-db/src/main/resources/application.properties` if needed:
+```properties
+spring.data.mongodb.uri=mongodb+srv://<USERNAME>:<PASSWORD>@cluster0.kmvmf.mongodb.net/?retryWrites=true&w=majority&appName=<DATABASE_NAME>
+spring.data.mongodb.database=DATABASE_NAME
+```
+
+### Frontend Configuration
+Create `frontend/repo-visualization-app/.env`:
+```properties
+REACT_APP_API_URL="http://localhost:8080/"
+```
+
+## Running the Application
+
+### Development Mode
+Terminal 1 - Backend:
+```bash
+cd backend/repo-db
+./mvnw spring-boot:run
+```
+
+Terminal 2 - Frontend:
+```bash
+cd frontend/repo-visualization-app
+npm start
+```
+
+### Production Build
+Backend:
+```bash
+cd backend/repo-db
+./mvnw clean package
+java -jar target/your-application-name-version.jar
+```
+
+Frontend:
+```bash
+cd frontend/repo-visualization-app
+npm run build
+```
+
+## API Documentation
+
+### Base URL
+`http://localhost:8080/`
+
+### Available Endpoints
+1. **`/load-github-repos`**
+   - Loads repository data from GitHub API (`https://api.github.com/orgs/brown-ccv/repos`) into the database
+   
+2. **`/fetch-repos/filter`**
+   - Fetches and filters repository data from the database
+
+For detailed API information, see [backend/repo-db/README.md](backend/repo-db/README.md#apis)
+
+## Demo
+
+Watch the application in action: [Mirror Repo Analysis Demo](https://www.youtube.com/watch?v=rsfLrRiYjdQ)
+
+## Credits
+- [MongoDB Atlas](https://www.mongodb.com/atlas) for database hosting
+- [GitHub API](https://docs.github.com/en/rest) for repository data
+- [Spring Boot](https://spring.io/projects/spring-boot) for the backend framework
+- [React](https://reactjs.org/) for the frontend framework
+- [Node.js](https://nodejs.org/) for the runtime environment
+
+## Troubleshooting
+
+### General Issues
+- Ensure both backend and frontend are running before accessing the application
+- Check that ports 8080 (backend) and 3000 (frontend) are not in use
+
+### Backend Issues
+See [backend/repo-db/README.md#troubleshooting-tips](backend/repo-db/README.md#troubleshooting-tips)
+
+### Frontend Issues
+See [frontend/repo-visualization-app/README.md#troubleshooting-tips](frontend/repo-visualization-app/README.md#troubleshooting-tips)
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
